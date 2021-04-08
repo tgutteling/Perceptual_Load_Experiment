@@ -1,1 +1,1 @@
-This is code for an MEG experiment invesistigating perceptual load
+This is code for an MEG experiment investigating perceptual load
