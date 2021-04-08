@@ -5,7 +5,11 @@ function [] = D2_Paper_figures()
 
 %folders
 group_folder='Z:\Tjerk\Load2\proc_data\group\';
+
+%https://github.com/bastibe/Violinplot-Matlab/blob/master/Violin.m
 addpath Z:\Tjerk\Scripts_general\Violinplot\
+
+%vline and hline
 addpath Z:\Tjerk\Scripts_general\
 addpath Z:\Tjerk\Load2\Layouts\
 addpath Z:\fieldtrip-latest\
@@ -28,24 +32,20 @@ RT_all(bad_subs,:)=[];
 beh_plot=[RT_all(:,1) RT_all(:,3) RT_all(:,2) RT_all(:,4)];
 
 subplot(1,3,[1 2])
-h=violinplot(beh_plot,{'noisy distractors','salient distractors','noisy distractors','salient distractors'},'ShowMean',true);
-h(1,1).ViolinColor=[0.2 0.2 0.8];
-h(1,1).EdgeColor=[0.2 0.2 0.8];
-h(1,1).ViolinPlot.LineStyle='--';
-h(1,1).ViolinPlot.LineWidth=2;
-h(1,2).ViolinColor=[0.2 0.2 0.8];
-h(1,2).EdgeColor=[0.2 0.2 0.8];
-h(1,2).ViolinPlot.LineWidth=2;
-h(1,3).ViolinColor=[0.8 0.2 0.2];
-h(1,3).EdgeColor=[0.8 0.2 0.2];
-h(1,3).ViolinPlot.LineWidth=2;
-h(1,3).ViolinPlot.LineStyle='--';
-h(1,4).ViolinColor=[0.8 0.2 0.2];
-h(1,4).EdgeColor=[0.8 0.2 0.2];
-h(1,4).ViolinPlot.LineWidth=2;
-ylabel('Reaction time (ms)');ylim([300 650])
+h=bar([mean(beh_plot(:,1)) mean(beh_plot(:,2)) ; mean(beh_plot(:,3)) mean(beh_plot(:,4))],'FaceColor','flat','FaceAlpha',0.5,'EdgeColor','flat','LineWidth',1.5);
+hold on;
+errorbar([h(1).XEndPoints h(2).XEndPoints],[h(1).YData h(2).YData],std(beh_plot)/sqrt(length(beh_plot)),'.','Color','k','LineWidth',1.5)
+ylim([250 530])
+h(1).CData(1,:)=[0.2 0.2 0.8];
+h(1).CData(2,:)=[0.8 0.2 0.2];
+h(2).CData(1,:)=[0.2 0.2 0.8];
+h(2).CData(2,:)=[0.8 0.2 0.2];
+h(1).LineStyle='--';
+ylabel('Reaction time (ms)');
+%xticklabels({'Low target load','High target load'})
+xticklabels({'noisy distractors   salient distractors','noisy distractors   salient distractors'})
 xlabel('Low target load                               High target load')
-text(-0.1,650,'A','Fontsize',20)
+text(0.2,530,'A','Fontsize',20);box off
 
 subplot(1,3,3)
 beh_plot=[RT_all(:,3)-RT_all(:,1) RT_all(:,4)-RT_all(:,2)];
@@ -395,59 +395,91 @@ for i=1:4
 end
 
 %Alpha ANOVA results TARGET
-subplot(3,6,1:3)
-beh_plot=[target_cl(:,1) target_cl(:,3) target_cl(:,2) target_cl(:,4)];
+subplot(5,6,1:3)
+beh_plot=[target_cl(:,3) target_cl(:,4) target_cl(:,1) target_cl(:,2)]*100;
 
-h=violinplot(-100+beh_plot*100,{'Dist. Noisy','Dist. Salient','Dist. Noisy','Dist. Salient'},'ShowMean',true);
-h(1,1).ViolinColor=[0.2 0.2 0.8];
-h(1,1).EdgeColor=[0.2 0.2 0.8];
-h(1,1).ViolinPlot.LineStyle='--';
-h(1,1).ViolinPlot.LineWidth=2;
-h(1,2).ViolinColor=[0.2 0.2 0.8];
-h(1,2).EdgeColor=[0.2 0.2 0.8];
-h(1,2).ViolinPlot.LineWidth=2;
-h(1,3).ViolinColor=[0.8 0.2 0.2];
-h(1,3).EdgeColor=[0.8 0.2 0.2];
-h(1,3).ViolinPlot.LineWidth=2;
-h(1,3).ViolinPlot.LineStyle='--';
-h(1,4).ViolinColor=[0.8 0.2 0.2];
-h(1,4).EdgeColor=[0.8 0.2 0.2];
-h(1,4).ViolinPlot.LineWidth=2;
-ylabel('Alpha power (rel. baseline, %change)');ylim([-40 100]);hline(0,'k');
-xlabel('Low target load                 high target load')
+h=bar([mean(beh_plot(:,1)) mean(beh_plot(:,2)) ; mean(beh_plot(:,3)) mean(beh_plot(:,4))],'FaceColor','flat','FaceAlpha',0.5,'EdgeColor','flat','LineWidth',1.5);
+hold on;
+errorbar([h(1).XEndPoints h(2).XEndPoints],[h(1).YData h(2).YData],std(beh_plot)/sqrt(length(beh_plot)),'.','Color','k','LineWidth',1.5)
+ylim([90 130])
+h(1).CData(1,:)=[0.2 0.2 0.8];
+h(1).CData(2,:)=[0.2 0.2 0.8];
+h(2).CData(1,:)=[0.8 0.2 0.2];
+h(2).CData(2,:)=[0.8 0.2 0.2];
+%h(1).LineStyle='--';
+%ylabel('Alpha power (rel. baseline, %change)');hline(0,'k');
+ylabel('Alpha power (%baseline)');hline(0,'k');
+xticklabels({'Low load  high load','low load  high load'})
+xlabel('Salient distractors     Noisy distractors')
 title('Target Alpha')
-text(-1.2,100,'A','Fontsize',20)
+text(0.1,130,'A','Fontsize',20);box off
 
 %Alpha ANOVA results DISTRACTOR
-subplot(3,6,4:6)
-beh_plot=[dist_cl(:,1) dist_cl(:,3) dist_cl(:,2) dist_cl(:,4)];
+subplot(5,6,4:6)
+beh_plot=[dist_cl(:,3) dist_cl(:,4) dist_cl(:,1) dist_cl(:,2)]*100;        
+     
+h=bar([mean(beh_plot(:,1)) mean(beh_plot(:,2)) ; mean(beh_plot(:,3)) mean(beh_plot(:,4))],'FaceColor','flat','FaceAlpha',0.5,'EdgeColor','flat','LineWidth',1.5);
+hold on;
+errorbar([h(1).XEndPoints h(2).XEndPoints],[h(1).YData h(2).YData],std(beh_plot)/sqrt(length(beh_plot)),'.','Color','k','LineWidth',1.5)
+ylim([90 130])
+h(1).CData(1,:)=[0.2 0.2 0.8];
+h(1).CData(2,:)=[0.2 0.2 0.8];
+h(2).CData(1,:)=[0.8 0.2 0.2];
+h(2).CData(2,:)=[0.8 0.2 0.2];
+%h(1).LineStyle='--';
+xticklabels({'Low load  high load','low load  high load'})
+xlabel('Salient distractors     Noisy distractors')
+title('Distractor Alpha');box off
 
-h=violinplot(-100+beh_plot*100,{'Dist. Noisy','Dist. Salient','Dist. Noisy','Dist. Salient'},'ShowMean',true);
-h(1,1).ViolinColor=[0.2 0.2 0.8];
-h(1,1).EdgeColor=[0.2 0.2 0.8];
-h(1,1).ViolinPlot.LineStyle='--';
+%add ANOVA significance
+line([h(1).XEndPoints(1) h(2).XEndPoints(1)],[121 121],'color','k','linewidth',2) %low vs high load salient dist
+line([h(1).XEndPoints(1) h(1).XEndPoints(1)],[115 121],'color','k','linewidth',2)
+line([h(2).XEndPoints(1) h(2).XEndPoints(1)],[120 121],'color','k','linewidth',2)
+line(repmat(mean([h(1).XEndPoints(1) h(2).XEndPoints(1)]),1,2),[121 122],'color','k','linewidth',2)
+text(mean([h(1).XEndPoints(1) h(2).XEndPoints(1)]),122.5,'*','Fontsize',16,'HorizontalAlignment','center')
+
+line([h(2).XEndPoints(1) h(2).XEndPoints(2)],[123 123],'color','k','linewidth',2) %high load noisy vs salient dist
+line([h(2).XEndPoints(1) h(2).XEndPoints(1)],[122 123],'color','k','linewidth',2)
+line([h(2).XEndPoints(2) h(2).XEndPoints(2)],[115 123],'color','k','linewidth',2)
+line(repmat(mean([h(2).XEndPoints(1) h(2).XEndPoints(2)]),1,2),[123 124],'color','k','linewidth',2)
+text(mean([h(2).XEndPoints(1)  h(2).XEndPoints(2)]),124.5,'*','Fontsize',16,'HorizontalAlignment','center')
+
+%SECTION B - Zoom in on significant effects
+%Load effect (distractor alpha)
+subplot(5,6,7:8)
+beh_plot=[dist_cl(:,4)-dist_cl(:,3) dist_cl(:,2)-dist_cl(:,1)]*100;        
+h=violinplot(beh_plot,{'Salient Distractors','Noisy Distractors'},'ShowMean',true);
+h(1,1).ViolinColor=[0 0 0];
+h(1,1).EdgeColor=[0 0 0];
+h(1,1).ViolinPlot.LineWidth=2;
+h(1,2).ViolinColor=[0 0 0];
+h(1,2).EdgeColor=[0 0 0];
+h(1,2).ViolinPlot.LineStyle='--';
+h(1,2).ViolinPlot.LineWidth=2;
+ylabel('\DeltaDistractor Alpha')
+title('Distractor Alpha - load effect')
+text(1,40,'*','Fontsize',30,'HorizontalAlignment','center')
+ylim([-50 50])
+text(0.01,50,'B','Fontsize',20);hline(0,'k');
+
+%SECTION C - Salience effect (distractor alpha)
+subplot(5,6,10:11)
+beh_plot=[dist_cl(:,4)-dist_cl(:,2) dist_cl(:,3)-dist_cl(:,1)]*100;        
+h=violinplot(beh_plot,{'High load','Low load'},'ShowMean',true);
+h(1,1).ViolinColor=[0.8 0.2 0.2];
+h(1,1).EdgeColor=[0.8 0.2 0.2];
 h(1,1).ViolinPlot.LineWidth=2;
 h(1,2).ViolinColor=[0.2 0.2 0.8];
 h(1,2).EdgeColor=[0.2 0.2 0.8];
 h(1,2).ViolinPlot.LineWidth=2;
-h(1,3).ViolinColor=[0.8 0.2 0.2];
-h(1,3).EdgeColor=[0.8 0.2 0.2];
-h(1,3).ViolinPlot.LineWidth=2;
-h(1,3).ViolinPlot.LineStyle='--';
-h(1,4).ViolinColor=[0.8 0.2 0.2];
-h(1,4).EdgeColor=[0.8 0.2 0.2];
-h(1,4).ViolinPlot.LineWidth=2;
-ylim([-40 100]);hline(0,'k');ax=gca;ax.YTickLabel={};
-xlabel('Low target load                 high target load')
-title('Distractor Alpha')
+ylabel('\DeltaDistractor Alpha')
+title('Distractor Alpha - salience effect')
+text(1,40,'*','Fontsize',30,'HorizontalAlignment','center')
+ylim([-50 50]);hline(0,'k')
+text(0.01,50,'C','Fontsize',20);hline(0,'k');
 
-%add ANOVA significance
-line([2 4],[85 85],'color','k','linewidth',2) %low vs high load salient dist
-text(3,88,'*','Fontsize',16)
-line([3 4],[70 70],'color','k','linewidth',2) %high load noisy vs salient dist
-text(3.5,73,'*','Fontsize',16)
 
-%Alpha distractor time course
+%SECTION D - Alpha distractor time course
 Alpha_dist=timecourses.alpha.dist;
 Alpha_dt_dist=timecourses.alpha.dist_dt;
 
@@ -469,19 +501,17 @@ selection=1:Nsubs;
 
 %get mean and SE per load condition
 for l=1:4
-    
-    %alpha
-    m_Alpha_distractor{l}=mean([Alpha_dist{selection,l}],2);m_Alpha_distractor{l}=m_Alpha_distractor{l}(cl_t1:cl_t2)*100;
+       
+    %alpha    
+    m_Alpha_distractor{l}=mean([Alpha_dist{selection,l}],2);m_Alpha_distractor{l}=m_Alpha_distractor{l}(cl_t1:cl_t2)*100;    
     se_Alpha_distractor{l}=std([Alpha_dist{selection,l}]')./sqrt(Nsubs);se_Alpha_distractor{l}=se_Alpha_distractor{l}(cl_t1:cl_t2)*100;
     
-    %Alpha DT
+    %Alpha DT    
     m_Alpha_dt_distractor{l}=mean([Alpha_dt_dist{selection,l}],2);m_Alpha_dt_distractor{l}=m_Alpha_dt_distractor{l}(dt_t1:dt_t2)*100;
-    se_Alpha_dt_distractor{l}=std([Alpha_dt_dist{selection,l}]')./sqrt(Nsubs);se_Alpha_dt_distractor{l}=se_Alpha_dt_distractor{l}(dt_t1:dt_t2)*100;
+    se_Alpha_dt_distractor{l}=std([Alpha_dt_dist{selection,l}]')./sqrt(Nsubs);se_Alpha_dt_distractor{l}=se_Alpha_dt_distractor{l}(dt_t1:dt_t2)*100;   
 end
 
-%Alpha timecourses
-%cue-locked
-subplot(3,6,7:9)
+subplot(5,6,13:15)
 h1=fill([cl_time fliplr(cl_time)],[m_Alpha_distractor{3}'-se_Alpha_distractor{3} fliplr(m_Alpha_distractor{3}'+se_Alpha_distractor{3})],[0 0 1],'Edgealpha',0);set(h1,'FaceAlpha',0.25);hold on
 h2=fill([cl_time fliplr(cl_time)],[m_Alpha_distractor{4}'-se_Alpha_distractor{4} fliplr(m_Alpha_distractor{4}'+se_Alpha_distractor{4})],[1 0 0],'Edgealpha',0);set(h2,'FaceAlpha',0.25);
 h3=plot(cl_time,m_Alpha_distractor{3},'color',[0 0 1],'linewidth',2);
@@ -489,27 +519,26 @@ h4=plot(cl_time,m_Alpha_distractor{4},'color',[1 0 0],'linewidth',2);
 xlim([-0.25 cl_time(end)]);ylim([90 140]);vline(0,'color','k','linestyle','--','linewidth',2);
 text(0.05,94,'CUE onset');title('Distractor Alpha (salient distractors)')
 xlabel('Time(s)');ylabel('Alpha power (%Baseline)')
-legend([h3,h4],{'low target load','high target load'},'location','northeast')
-text(-0.57,140,'B','Fontsize',20)
+legend([h3,h4],{'low target load','high target load'},'location','northeast');box off
+text(-0.57,140,'D','Fontsize',20)
 
-%discrimination target locked
-subplot(3,6,10:12)
+subplot(5,6,16:18)
 h1=fill([dt_time fliplr(dt_time)],[m_Alpha_dt_distractor{3}'-se_Alpha_dt_distractor{3} fliplr(m_Alpha_dt_distractor{3}'+se_Alpha_dt_distractor{3})],[0 0 1],'Edgealpha',0);set(h1,'FaceAlpha',0.25);hold on
 h2=fill([dt_time fliplr(dt_time)],[m_Alpha_dt_distractor{4}'-se_Alpha_dt_distractor{4} fliplr(m_Alpha_dt_distractor{4}'+se_Alpha_dt_distractor{4})],[1 0 0],'Edgealpha',0);set(h2,'FaceAlpha',0.25);
 h3=plot(dt_time,m_Alpha_dt_distractor{3},'color',[0 0 1],'linewidth',2);
 h4=plot(dt_time,m_Alpha_dt_distractor{4},'color',[1 0 0],'linewidth',2);
 xlim([-cl_time(end) 0.25]);ylim([90 140]);vline(0,'color','k','linestyle','--','linewidth',2);
 text(-0.55,94,'Discrimination target');
-xlabel('Time(s)');ax=gca;ax.YTickLabel={};
+xlabel('Time(s)');ax=gca;ax.YTickLabel={};box off
 
-%Add empty space for source loc
-subplot(3,6,13:16)
-text(-0.15,1,'C','Fontsize',20)
+%SECTION E- source loc (added externally)
+subplot(5,6,19:21)
+text(-0.15,1,'E','Fontsize',20)
 box off;axis off
 
-%correlation plot
-subplot(3,6,17:18)
-text(-0.15,1,'D','Fontsize',20)
+%SECTION F - correlation
+subplot(5,6,22:23)
+text(-0.15,1,'F','Fontsize',20)
 t1=dsearchn(cl_time',0.5)+cl_t1-1;
 t2=dsearchn(cl_time',1.35)+cl_t1-1;
 Alpha_LMI_salient_tw=mean(timecourses.alpha.LMI_dist_salient(:,t1:t2),2);
@@ -518,8 +547,28 @@ scatter(Alpha_LMI_salient_tw,DE_low);
 h=lsline;set(h,'color','r');hline(0,'k');vline(0,'k');
 xlabel('Distractor Alpha - Load modulation index');ylabel('Beh. low load dist. interference (ms)')
 [rho_sp,p_sp]=corr(Alpha_LMI_salient_tw,DE_low,'type','spearman');
-title(['r: ' num2str(rho_sp,2) ' p=' num2str(p_sp,2)]);
-text(-0.19,60,'D','Fontsize',20)
+title(['r: ' num2str(rho_sp,2) ' p=' num2str(p_sp,2)]); 
+text(-0.19,60,'F','Fontsize',20)
+
+%SECTION G - Distractor salience timecourse
+subplot(5,6,[25:27])
+h1=fill([cl_time fliplr(cl_time)],[m_Alpha_distractor{2}'-se_Alpha_distractor{2} fliplr(m_Alpha_distractor{2}'+se_Alpha_distractor{2})],[1 0 0],'Edgealpha',0);set(h1,'FaceAlpha',0.25);hold on
+h2=fill([cl_time fliplr(cl_time)],[m_Alpha_distractor{4}'-se_Alpha_distractor{4} fliplr(m_Alpha_distractor{4}'+se_Alpha_distractor{4})],[1 0 0],'Edgealpha',0);set(h2,'FaceAlpha',0.25);
+h3=plot(cl_time,m_Alpha_distractor{2},'color',[1 0 0],'linewidth',2,'linestyle','--');
+h4=plot(cl_time,m_Alpha_distractor{4},'color',[1 0 0],'linewidth',2);
+xlim([-0.25 cl_time(end)]);ylim([93 138]);vline(0,'color','k','linestyle','--','linewidth',2);
+text(0.05,96,'CUE onset');title('Distractor Alpha (high load)')
+xlabel('Time(s)');ylabel('Alpha power (%Baseline)')
+legend([h3,h4],{'Noisy distractor','Salient distractor'},'location','northeast'); box off
+text(-0.6,138,'G','Fontsize',20)
+subplot(5,6,[28:30])
+h1=fill([dt_time fliplr(dt_time)],[m_Alpha_dt_distractor{2}'-se_Alpha_dt_distractor{2} fliplr(m_Alpha_dt_distractor{2}'+se_Alpha_dt_distractor{1})],[1 0 0],'Edgealpha',0);set(h1,'FaceAlpha',0.25);hold on
+h2=fill([dt_time fliplr(dt_time)],[m_Alpha_dt_distractor{4}'-se_Alpha_dt_distractor{4} fliplr(m_Alpha_dt_distractor{4}'+se_Alpha_dt_distractor{3})],[1 0 0],'Edgealpha',0);set(h2,'FaceAlpha',0.25);
+h3=plot(dt_time,m_Alpha_dt_distractor{2},'color',[1 0 0],'linewidth',2,'linestyle','--');
+h4=plot(dt_time,m_Alpha_dt_distractor{4},'color',[1 0 0],'linewidth',2);
+xlim([-cl_time(end) 0.25]);ylim([93 138]);vline(0,'color','k','linestyle','--','linewidth',2);
+text(-0.6,96,'Discrimination target');
+xlabel('Time(s)');ax=gca;ax.YTickLabel={};box off
 
 
 %% check RFT distractor noisy load correlation for mention in paper
@@ -534,7 +583,7 @@ disp(['Noisy distractor RFT correlation with behavioral distractor interference 
 [rho,p]=corr(RFT_LMI_noisy,DE_high,'type','spearman');
 disp(['Noisy distractor RFT correlation with behavioral distractor interference with high load: p=' num2str(p,2)])
 
-%% Figure 5 - RFT load effects
+%% Figure 5 - target RFT 
 f5=figure('Name','Fig 5: RFT load effects');
 
 %time window plots
@@ -550,63 +599,49 @@ for i=1:4
     target_cl(:,i)=nanmean(tmp(:,cl_tw_ind(1):cl_tw_ind(2)),2);
 end
 
-%RFT target ANOVA
-subplot(4,4,[1 2])
-beh_plot=[target_cl(:,1) target_cl(:,3) target_cl(:,2) target_cl(:,4)];
+%SECTION A - timewindow ANOVA 
+subplot(3,8,1:4)
+beh_plot=[target_cl(:,3) target_cl(:,4) target_cl(:,1) target_cl(:,2)]*100;
 
-h=violinplot(-100+beh_plot*100,{'Dist. Noisy','Dist. Salient','Dist. Noisy','Dist. Salient'},'ShowMean',true);
-h(1,1).ViolinColor=[0.2 0.2 0.8];
-h(1,1).EdgeColor=[0.2 0.2 0.8];
-h(1,1).ViolinPlot.LineStyle='--';
-h(1,1).ViolinPlot.LineWidth=2;
-h(1,2).ViolinColor=[0.2 0.2 0.8];
-h(1,2).EdgeColor=[0.2 0.2 0.8];
-h(1,2).ViolinPlot.LineWidth=2;
-h(1,3).ViolinColor=[0.8 0.2 0.2];
-h(1,3).EdgeColor=[0.8 0.2 0.2];
-h(1,3).ViolinPlot.LineWidth=2;
-h(1,3).ViolinPlot.LineStyle='--';
-h(1,4).ViolinColor=[0.8 0.2 0.2];
-h(1,4).EdgeColor=[0.8 0.2 0.2];
-h(1,4).ViolinPlot.LineWidth=2;
-xlabel('Low target load                 high target load')
-ylabel('RFT power (rel. baseline %change)');ylim([-100 120]);hline(1,'k');
+h=bar([mean(beh_plot(:,1)) mean(beh_plot(:,2)) ; mean(beh_plot(:,3)) mean(beh_plot(:,4))],'FaceColor','flat','FaceAlpha',0.5,'EdgeColor','flat','LineWidth',1.5);
+hold on;
+errorbar([h(1).XEndPoints h(2).XEndPoints],[h(1).YData h(2).YData],std(beh_plot)/sqrt(length(beh_plot)),'.','Color','k','LineWidth',1.5)
+ylim([65 100])
+h(1).CData(1,:)=[0.2 0.2 0.8];
+h(1).CData(2,:)=[0.2 0.2 0.8];
+h(2).CData(1,:)=[0.8 0.2 0.2];
+h(2).CData(2,:)=[0.8 0.2 0.2];
+ylabel('RFT power (%baseline)');
+xticklabels({'Low load  high load','low load  high load'})
+xlabel('Salient distractors     Noisy distractors')
 title('Target RFT')
+text(0.1,100,'A','Fontsize',20);box off
 
 %add ANOVA significance
-line([2 4],[-70 -70],'color','k','linewidth',2);
-text(3,-85,'*','Fontsize',16);
-text(-1,120,'A','Fontsize',20);
+line([h(1).XEndPoints(1) h(2).XEndPoints(1)],[95 95],'color','k','linewidth',2) %low vs high load salient dist
+line([h(1).XEndPoints(1) h(1).XEndPoints(1)],[95 85],'color','k','linewidth',2)
+line([h(2).XEndPoints(1) h(2).XEndPoints(1)],[95 93],'color','k','linewidth',2)
+line(repmat(mean([h(1).XEndPoints(1) h(2).XEndPoints(1)]),1,2),[95 97],'color','k','linewidth',2)
+text(mean([h(1).XEndPoints(1) h(2).XEndPoints(1)]),98,'*','Fontsize',16,'HorizontalAlignment','center')
 
-%RFT distractor ANOVA
-subplot(4,4,[3 4])
-beh_plot=[dist_cl(:,1) dist_cl(:,3) dist_cl(:,2) dist_cl(:,4)];
-
-h=violinplot(-100+beh_plot*100,{'Dist. Noisy','Dist. Salient','Dist. Noisy','Dist. Salient'},'ShowMean',true);
-h(1,1).ViolinColor=[0.2 0.2 0.8];
-h(1,1).EdgeColor=[0.2 0.2 0.8];
-h(1,1).ViolinPlot.LineStyle='--';
+%SECTION B - ZOOM IN ON LOAD EFFECT 
+subplot(3,8,6:8)
+beh_plot=[target_cl(:,4)-target_cl(:,3) target_cl(:,2)-target_cl(:,1)]*100;        
+h=violinplot(beh_plot,{'Salient Distractors','Noisy Distractors'},'ShowMean',true);
+h(1,1).ViolinColor=[0 0 0];
+h(1,1).EdgeColor=[0 0 0];
 h(1,1).ViolinPlot.LineWidth=2;
-h(1,2).ViolinColor=[0.2 0.2 0.8];
-h(1,2).EdgeColor=[0.2 0.2 0.8];
+h(1,2).ViolinColor=[0 0 0];
+h(1,2).EdgeColor=[0 0 0];
+h(1,2).ViolinPlot.LineStyle='--';
 h(1,2).ViolinPlot.LineWidth=2;
-h(1,3).ViolinColor=[0.8 0.2 0.2];
-h(1,3).EdgeColor=[0.8 0.2 0.2];
-h(1,3).ViolinPlot.LineWidth=2;
-h(1,3).ViolinPlot.LineStyle='--';
-h(1,4).ViolinColor=[0.8 0.2 0.2];
-h(1,4).EdgeColor=[0.8 0.2 0.2];
-h(1,4).ViolinPlot.LineWidth=2;
-xlabel('Low target load                 high target load');
-ylim([-100 120]);hline(1,'k');ax=gca;ax.YTickLabel={};
-title('Distractor RFT');
+ylabel('\DeltaTarget RFT')
+title('Target load effect')
+text(1,30,'*','Fontsize',30,'HorizontalAlignment','center')
+ylim([-25 40]);
+text(0.01,40,'B','Fontsize',20);hline(0,'k');
 
-%add ANOVA significance
-line([1 3],[70 70],'color','k','linewidth',2); %low vs high load noisy dist
-text(2,80,'*','Fontsize',16);
-line([3 4],[85 85],'color','k','linewidth',2); %salient vs noisy dist high load
-text(3.4,95,'*','Fontsize',16);
-
+%SECTION C - TARGET RFT TIMECOURSE 
 %Target RFT timecourse
 RFT_target=timecourses.RFT.target;
 RFT_dt_target=timecourses.RFT.target_dt;
@@ -623,43 +658,41 @@ dt_t2=find(~isnan(RFT_dt_target{1,1}),1,'last');
 dt_time=timecourses.dt_time(dt_t1:dt_t2);
 
 %get mean and SE per load condition
-for l=1:4
-    m_RFT_target{l}=mean([RFT_target{:,l}],2);m_RFT_target{l}=m_RFT_target{l}(cl_t1:cl_t2)*100;
+for l=1:4           
+    m_RFT_target{l}=mean([RFT_target{:,l}],2);m_RFT_target{l}=m_RFT_target{l}(cl_t1:cl_t2)*100;    
     se_RFT_target{l}=std([RFT_target{:,l}]')./sqrt(Nsubs);se_RFT_target{l}=se_RFT_target{l}(cl_t1:cl_t2)*100;
     
-    %DT
+    %DT    
     m_RFT_dt_target{l}=mean([RFT_dt_target{:,l}],2);m_RFT_dt_target{l}=m_RFT_dt_target{l}(dt_t1:dt_t2)*100;
     se_RFT_dt_target{l}=std([RFT_dt_target{:,l}]')./sqrt(Nsubs);se_RFT_dt_target{l}=se_RFT_dt_target{l}(dt_t1:dt_t2)*100;
 end
 
-%Cue-locked
-subplot(4,4,[5 6])
+subplot(3,8,9:12)
 h1=fill([cl_time fliplr(cl_time)],[m_RFT_target{3}'-se_RFT_target{3} fliplr(m_RFT_target{3}'+se_RFT_target{3})],[0 0 1],'Edgealpha',0);set(h1,'FaceAlpha',0.25);hold on
 h2=fill([cl_time fliplr(cl_time)],[m_RFT_target{4}'-se_RFT_target{4} fliplr(m_RFT_target{4}'+se_RFT_target{4})],[1 0 0],'Edgealpha',0);set(h2,'FaceAlpha',0.25);
 h3=plot(cl_time,m_RFT_target{3},'color',[0 0 1],'linewidth',2);
 h4=plot(cl_time,m_RFT_target{4},'color',[1 0 0],'linewidth',2);
 xlim([-0.25 cl_time(end)]);ylim([55 110]);vline(0,'color','k','linestyle','--','linewidth',2);
-if timecourse_stats, plot_stat(RFT_target_cl_salient_stat,0.6,[0 0 0]); end
 text(0.05,60,'CUE onset');title('Target RFT (salient distractors)');legend([h3,h4],{'low target load','high target load'},'location','southeast')
-xlabel('Time(s)');ylabel('RFT power (%Baseline)')
-text(-0.5,110,'B','Fontsize',20)
+xlabel('Time(s)');ylabel('RFT power (%Baseline)');box off
+text(-0.5,110,'C','Fontsize',20)
 
-%discrimination target-locked
-subplot(4,4,[7 8])
+subplot(3,8,13:16)
 h1=fill([dt_time fliplr(dt_time)],[m_RFT_dt_target{3}'-se_RFT_dt_target{3} fliplr(m_RFT_dt_target{3}'+se_RFT_dt_target{3})],[0 0 1],'Edgealpha',0);set(h1,'FaceAlpha',0.25);hold on
 h2=fill([dt_time fliplr(dt_time)],[m_RFT_dt_target{4}'-se_RFT_dt_target{4} fliplr(m_RFT_dt_target{4}'+se_RFT_dt_target{4})],[1 0 0],'Edgealpha',0);set(h2,'FaceAlpha',0.25);
 h3=plot(dt_time,m_RFT_dt_target{3},'color',[0 0 1],'linewidth',2);
 h4=plot(dt_time,m_RFT_dt_target{4},'color',[1 0 0],'linewidth',2);
 xlim([-cl_time(end) 0.25]);ylim([55 110]);vline(0,'color','k','linestyle','--','linewidth',2);
-if timecourse_stats, plot_stat(RFT_target_dt_salient_stat,0.6,[0 0 0]); end
 text(-0.55,60,'Discrimination target');
-xlabel('Time(s)');ax=gca;ax.YTickLabel={};
+xlabel('Time(s)');ax=gca;ax.YTickLabel={};box off
 
-%Add empty space for source loc
-subplot(4,4,[9 10])
-text(-0.15,1,'C','Fontsize',20)
+%SECTION D - SOURCE LOCALIZATION
+%source loc (empty)
+subplot(3,8,17:20)
+text(-0.15,1,'D','Fontsize',20)
 axis off;
 
+%SECTION E - CORRELATIONS
 %correlations
 DE_time=timecourses.time+0.35;
 t1=dsearchn(DE_time',0.5);
@@ -668,17 +701,14 @@ RFT_DE_low_tw=nanmean(nanmean(timecourses.RFT.DE_low_load(:,:,t1:t2),2),3);
 RFT_DE_high_tw=nanmean(nanmean(timecourses.RFT.DE_high_load(:,:,t1:t2),2),3);
 DE_high=RT_all(:,4)-RT_all(:,2);
 
-%Low load
-subplot(4,4,11)
+subplot(3,8,21:22)
 scatter(RFT_DE_low_tw,DE_low);axis([-0.08 0.08 -50 60])
 h=lsline;set(h,'color','r');hline(0,'k');vline(0,'k');
 xlabel('Target RFT - Distractor effect');ylabel('Beh. dist. interference (ms)')
 [rho_sp,p_sp]=corr(RFT_DE_low_tw,DE_low,'type','spearman');
 title({'Low target load',['r: ' num2str(rho_sp,3) ' p=' num2str(p_sp,2)]})
-text(-0.135,60,'D','Fontsize',20)
-
-%High load
-subplot(4,4,12)
+text(-0.135,60,'E','Fontsize',20)
+subplot(3,8,23:24)
 scatter(RFT_DE_high_tw,DE_high);axis([-0.08 0.08 -50 60])
 h=lsline;set(h,'color','r');hline(0,'k');vline(0,'k');
 xlabel('Target RFT - Distractor effect');
@@ -686,7 +716,83 @@ xlabel('Target RFT - Distractor effect');
 title({'High target load',['r: ' num2str(rho_sp,3) ' p=' num2str(p_sp,2)]})
 ax=gca;ax.YTickLabel={};
 
-%Distractor RFT timecourse noisy low vs high
+%% Figure 6 - Distractor RFT
+
+f6=figure('Name','Fig 6: Salience effects');
+%SECTION A - timewindow ANOVA 
+subplot(4,8,1:4)
+beh_plot=[dist_cl(:,3) dist_cl(:,4) dist_cl(:,1) dist_cl(:,2)]*100;
+
+h=bar([mean(beh_plot(:,1)) mean(beh_plot(:,2)) ; mean(beh_plot(:,3)) mean(beh_plot(:,4))],'FaceColor','flat','FaceAlpha',0.5,'EdgeColor','flat','LineWidth',1.5);
+hold on;
+errorbar([h(1).XEndPoints h(2).XEndPoints],[h(1).YData h(2).YData],std(beh_plot)/sqrt(length(beh_plot)),'.','Color','k','LineWidth',1.5)
+ylim([40 90])
+h(1).CData(1,:)=[0.2 0.2 0.8];
+h(1).CData(2,:)=[0.2 0.2 0.8];
+h(2).CData(1,:)=[0.8 0.2 0.2];
+h(2).CData(2,:)=[0.8 0.2 0.2];
+%h(1).LineStyle='--';
+ylabel('RFT power (%baseline)');
+xticklabels({'Low load  high load','low load  high load'})
+xlabel('Salient distractors     Noisy distractors')
+title('Distractor RFT')
+text(0.1,90,'A','Fontsize',20);box off
+
+%add ANOVA significance
+line([h(1).XEndPoints(2) h(2).XEndPoints(2)],[77 77],'color','k','linewidth',2) %low vs high load noisy dist
+line([h(1).XEndPoints(2) h(1).XEndPoints(2)],[70 77],'color','k','linewidth',2)
+line([h(2).XEndPoints(2) h(2).XEndPoints(2)],[75 77],'color','k','linewidth',2)
+line(repmat(mean([h(1).XEndPoints(2) h(2).XEndPoints(2)]),1,2),[77 79],'color','k','linewidth',2)
+text(mean([h(1).XEndPoints(2) h(2).XEndPoints(2)]),80,'*','Fontsize',16,'HorizontalAlignment','center')
+
+line([h(2).XEndPoints(1) h(2).XEndPoints(2)],[83 83],'color','k','linewidth',2) %Noisy vs salient high load
+line([h(2).XEndPoints(1) h(2).XEndPoints(1)],[75 83],'color','k','linewidth',2)
+line([h(2).XEndPoints(2) h(2).XEndPoints(2)],[81 83],'color','k','linewidth',2)
+line(repmat(mean([h(2).XEndPoints(1) h(2).XEndPoints(2)]),1,2),[83 85],'color','k','linewidth',2)
+text(mean([h(2).XEndPoints(1) h(2).XEndPoints(2)]),86,'*','Fontsize',16,'HorizontalAlignment','center')
+
+%SECTION B - POST-HOC EFFECTS
+%zoom in on load effect
+%subplot(4,8,9:12)
+subplot(4,8,6:8)
+beh_plot=[dist_cl(:,4)-dist_cl(:,3) dist_cl(:,2)-dist_cl(:,1)]*100;        
+h=violinplot(beh_plot,{'Salient Distractors','Noisy Distractors'},'ShowMean',true);
+h(1,1).ViolinColor=[0 0 0];
+h(1,1).EdgeColor=[0 0 0];
+h(1,1).ViolinPlot.LineWidth=2;
+h(1,2).ViolinColor=[0 0 0];
+h(1,2).EdgeColor=[0 0 0];
+h(1,2).ViolinPlot.LineStyle='--';
+h(1,2).ViolinPlot.LineWidth=2;
+ylabel('\DeltaDistractor RFT')
+title('Distractor RFT - load effect')
+text(2,25,'*','Fontsize',30,'HorizontalAlignment','center')
+ylim([-40 40]);
+text(0.1,40,'B','Fontsize',20);hline(0,'k');
+
+%SECTION C - zoom in on salience effect
+subplot(4,8,9:11)
+beh_plot=[dist_cl(:,4)-dist_cl(:,2) dist_cl(:,3)-dist_cl(:,1)]*100;        
+h=violinplot(beh_plot,{'High Load','Low Load'},'ShowMean',true);
+h(1,1).ViolinColor=[0.8 0.2 0.2];
+h(1,1).EdgeColor=[0.8 0.2 0.2];
+h(1,1).ViolinPlot.LineWidth=2;
+h(1,2).ViolinColor=[0.2 0.2 0.8];
+h(1,2).EdgeColor=[0.2 0.2 0.8];
+h(1,2).ViolinPlot.LineWidth=2;
+title('Distractor RFT - salience effect')
+text(1,20,'*','Fontsize',30,'HorizontalAlignment','center')
+ylabel('\DeltaDistractor RFT')
+ylim([-40 40]);hline(0,'k');
+text(0.1,40,'C','Fontsize',20);
+
+%SECTION D - SOURCE LOC (EMPTY)
+subplot(4,8,12:16)
+text(0,1,'D','Fontsize',20)
+axis off;
+
+%SECTION E - distractor RFT load effect timecourse
+%Distractor RFT noisy low vs high
 RFT_dist=timecourses.RFT.dist;
 RFT_dt_dist=timecourses.RFT.dist_dt;
 
@@ -696,109 +802,51 @@ Nsubs=size(RFT_dist,1);
 %get mean and SE per load condition
 for l=1:4
     
-    %RFT
-    m_RFT_distractor{l}=mean([RFT_dist{selection,l}],2);m_RFT_distractor{l}=m_RFT_distractor{l}(cl_t1:cl_t2)*100;
+    %RFT    
+    m_RFT_distractor{l}=mean([RFT_dist{selection,l}],2);m_RFT_distractor{l}=m_RFT_distractor{l}(cl_t1:cl_t2)*100;    
     se_RFT_distractor{l}=std([RFT_dist{selection,l}]')./sqrt(Nsubs);se_RFT_distractor{l}=se_RFT_distractor{l}(cl_t1:cl_t2)*100;
     
-    %RFT DT
-    m_RFT_dt_distractor{l}=mean([RFT_dt_dist{selection,l}],2);m_RFT_dt_distractor{l}=m_RFT_dt_distractor{l}(dt_t1:dt_t2)*100;
+    %RFT DT    
+    m_RFT_dt_distractor{l}=mean([RFT_dt_dist{selection,l}],2);m_RFT_dt_distractor{l}=m_RFT_dt_distractor{l}(dt_t1:dt_t2)*100;    
     se_RFT_dt_distractor{l}=std([RFT_dt_dist{selection,l}]')./sqrt(Nsubs);se_RFT_dt_distractor{l}=se_RFT_dt_distractor{l}(dt_t1:dt_t2)*100;
 end
 
-%Cue-locked
-subplot(4,4,[13 14])
+subplot(4,8,17:20)
 h1=fill([cl_time fliplr(cl_time)],[m_RFT_distractor{1}'-se_RFT_distractor{1} fliplr(m_RFT_distractor{1}'+se_RFT_distractor{1})],[0 0 1],'Edgealpha',0);set(h1,'FaceAlpha',0.25);hold on
 h2=fill([cl_time fliplr(cl_time)],[m_RFT_distractor{2}'-se_RFT_distractor{2} fliplr(m_RFT_distractor{2}'+se_RFT_distractor{2})],[1 0 0],'Edgealpha',0);set(h2,'FaceAlpha',0.25);
 h3=plot(cl_time,m_RFT_distractor{1},'color',[0 0 1],'linewidth',2,'linestyle','--');
 h4=plot(cl_time,m_RFT_distractor{2},'color',[1 0 0],'linewidth',2,'linestyle','--');
-xlim([-0.25 cl_time(end)]);ylim([45 95]);vline(0,'color','k','linestyle','--','linewidth',2);
-text(0.05,48,'CUE onset');title('Distractor RFT (noisy distractors)')
+xlim([-0.25 cl_time(end)]);ylim([40 90]);vline(0,'color','k','linestyle','--','linewidth',2);
+text(0.02,43,'CUE onset','HorizontalAlignment','left');title('Distractor RFT (noisy distractors)')
 xlabel('Time(s)');ylabel('RFT power (%Baseline)')
-legend([h3,h4],{'low target load','high target load'},'location','northeast')
-text(-0.45,95,'E','Fontsize',20)
-
-%Discrimination target-locked
-subplot(4,4,[15 16])
+text(-0.55,90,'E','Fontsize',20);box off
+subplot(4,8,21:24)
 h1=fill([dt_time fliplr(dt_time)],[m_RFT_dt_distractor{1}'-se_RFT_dt_distractor{1} fliplr(m_RFT_dt_distractor{1}'+se_RFT_dt_distractor{1})],[0 0 1],'Edgealpha',0);set(h1,'FaceAlpha',0.25);hold on
 h2=fill([dt_time fliplr(dt_time)],[m_RFT_dt_distractor{2}'-se_RFT_dt_distractor{2} fliplr(m_RFT_dt_distractor{2}'+se_RFT_dt_distractor{2})],[1 0 0],'Edgealpha',0);set(h2,'FaceAlpha',0.25);
 h3=plot(dt_time,m_RFT_dt_distractor{1},'color',[0 0 1],'linewidth',2,'linestyle','--');
 h4=plot(dt_time,m_RFT_dt_distractor{2},'color',[1 0 0],'linewidth',2,'linestyle','--');
-xlim([-cl_time(end) 0.25]);ylim([45 95]);vline(0,'color','k','linestyle','--','linewidth',2);
-text(-0.45,48,'Discrimination target');
+xlim([-cl_time(end) 0.25]);ylim([40 90]);vline(0,'color','k','linestyle','--','linewidth',2);
+text(-0.02,43,'Discrimination target','HorizontalAlignment','right');legend([h3,h4],{'low target load','high target load'},'location','northwest');box off
 xlabel('Time(s)');ax=gca;ax.YTickLabel={};
 
-%% Figure 6 - Effects of distractor salience
-f6=figure('Name','Fig 6: Salience effects');
-
-%alpha
-cl_t1=find(~isnan(Alpha_dist{1,1}),1,'first');
-cl_t2=find(~isnan(Alpha_dist{1,1}),1,'last');
-
-cl_time=timecourses.time(cl_t1:cl_t2)+.35; %cue onset = 0
-
-dt_t1=find(~isnan(Alpha_dt_dist{1,1}),1,'first');
-dt_t2=find(~isnan(Alpha_dt_dist{1,1}),1,'last');
-
-dt_time=timecourses.dt_time(dt_t1:dt_t2);
-
-%Cue-locked Distractor Alpha salience
-subplot(2,4,[1 2])
-h1=fill([cl_time fliplr(cl_time)],[m_Alpha_distractor{2}'-se_Alpha_distractor{2} fliplr(m_Alpha_distractor{2}'+se_Alpha_distractor{2})],[1 0 0],'Edgealpha',0);set(h1,'FaceAlpha',0.25);hold on
-h2=fill([cl_time fliplr(cl_time)],[m_Alpha_distractor{4}'-se_Alpha_distractor{4} fliplr(m_Alpha_distractor{4}'+se_Alpha_distractor{4})],[1 0 0],'Edgealpha',0);set(h2,'FaceAlpha',0.25);
-h3=plot(cl_time,m_Alpha_distractor{2},'color',[1 0 0],'linewidth',2,'linestyle','--');
-h4=plot(cl_time,m_Alpha_distractor{4},'color',[1 0 0],'linewidth',2);
-xlim([-0.25 cl_time(end)]);ylim([93 138]);vline(0,'color','k','linestyle','--','linewidth',2);
-if timecourse_stats, plot_stat(Alpha_dist_cl_highload_stat,0.97,[0 0 0]); end
-text(0.05,96,'CUE onset');title('Distractor Alpha (high load)')
-xlabel('Time(s)');ylabel('Rel. Baseline Alpha power')
-legend([h3,h4],{'Noisy distractor','Salient distractor'},'location','northeast')
-text(-0.6,138,'A','Fontsize',20)
-
-%Discrimination target-locked
-subplot(2,4,[3 4])
-h1=fill([dt_time fliplr(dt_time)],[m_Alpha_dt_distractor{2}'-se_Alpha_dt_distractor{2} fliplr(m_Alpha_dt_distractor{2}'+se_Alpha_dt_distractor{1})],[1 0 0],'Edgealpha',0);set(h1,'FaceAlpha',0.25);hold on
-h2=fill([dt_time fliplr(dt_time)],[m_Alpha_dt_distractor{4}'-se_Alpha_dt_distractor{4} fliplr(m_Alpha_dt_distractor{4}'+se_Alpha_dt_distractor{3})],[1 0 0],'Edgealpha',0);set(h2,'FaceAlpha',0.25);
-h3=plot(dt_time,m_Alpha_dt_distractor{2},'color',[1 0 0],'linewidth',2,'linestyle','--');
-h4=plot(dt_time,m_Alpha_dt_distractor{4},'color',[1 0 0],'linewidth',2);
-xlim([-cl_time(end) 0.25]);ylim([93 138]);vline(0,'color','k','linestyle','--','linewidth',2);
-if timecourse_stats, plot_stat(Alpha_dist_dt_highload_stat,0.97,[0 0 0]); end
-text(-0.6,96,'Discrimination target');
-xlabel('Time(s)');ax=gca;ax.YTickLabel={};
-
-%RFT Distractor salience
-%truncate to non-nan (aka numbers)
-cl_t1=find(~isnan(RFT_target{1,1}),1,'first');
-cl_t2=find(~isnan(RFT_target{1,1}),1,'last');
-
-cl_time=timecourses.time(cl_t1:cl_t2)+.35; %cue onset = 0
-
-dt_t1=find(~isnan(RFT_dt_target{1,1}),1,'first');
-dt_t2=find(~isnan(RFT_dt_target{1,1}),1,'last');
-
-dt_time=timecourses.dt_time(dt_t1:dt_t2);
-
-%Cue-locked
-subplot(2,4,[5 6])
+%SECTION F - Distractor RFT salience effet timecourse
+subplot(4,8,25:28)
 h1=fill([cl_time fliplr(cl_time)],[m_RFT_distractor{2}'-se_RFT_distractor{2} fliplr(m_RFT_distractor{2}'+se_RFT_distractor{2})],[1 0 0],'Edgealpha',0);set(h1,'FaceAlpha',0.25);hold on
 h2=fill([cl_time fliplr(cl_time)],[m_RFT_distractor{4}'-se_RFT_distractor{4} fliplr(m_RFT_distractor{4}'+se_RFT_distractor{4})],[1 0 0],'Edgealpha',0);set(h2,'FaceAlpha',0.25);
 h3=plot(cl_time,m_RFT_distractor{2},'color',[1 0 0],'linewidth',2,'linestyle','--');
 h4=plot(cl_time,m_RFT_distractor{4},'color',[1 0 0],'linewidth',2);
-xlim([-0.25 cl_time(end)]);ylim([45 95]);vline(0,'color','k','linestyle','--','linewidth',2);
-if timecourse_stats, plot_stat(RFT_dist_highload_stat,0.47,[0 0 0]); end
-text(0.05,48,'CUE onset');title('Distractor RFT (high load)')
-xlabel('Time(s)');ylabel('Rel. Baseline RFT power')
-text(-0.6,95,'B','Fontsize',20)
-
-%Discrimination target-locked
-subplot(2,4,[7 8])
+xlim([-0.25 cl_time(end)]);ylim([40 90]);vline(0,'color','k','linestyle','--','linewidth',2);
+text(0.02,43,'CUE onset','HorizontalAlignment','left');title('Distractor RFT (high load)')
+xlabel('Time(s)');ylabel('RFT power (%Baseline)');box off
+text(-0.5,90,'F','Fontsize',20)
+subplot(4,8,29:32)
 h1=fill([dt_time fliplr(dt_time)],[m_RFT_dt_distractor{2}'-se_RFT_dt_distractor{2} fliplr(m_RFT_dt_distractor{2}'+se_RFT_dt_distractor{2})],[1 0 0],'Edgealpha',0);set(h1,'FaceAlpha',0.25);hold on
 h2=fill([dt_time fliplr(dt_time)],[m_RFT_dt_distractor{4}'-se_RFT_dt_distractor{4} fliplr(m_RFT_dt_distractor{4}'+se_RFT_dt_distractor{4})],[1 0 0],'Edgealpha',0);set(h2,'FaceAlpha',0.25);
 h3=plot(dt_time,m_RFT_dt_distractor{2},'color',[1 0 0],'linewidth',2,'linestyle','--');
 h4=plot(dt_time,m_RFT_dt_distractor{4},'color',[1 0 0],'linewidth',2);
-xlim([-cl_time(end) 0.25]);ylim([45 95]);vline(0,'color','k','linestyle','--','linewidth',2);
-if timecourse_stats, plot_stat(RFT_dist_dt_highload_stat,0.47,[0 0 0]); end
-text(-0.6,48,'Discrimination target');legend([h3,h4],{'Noisy distractors','Salient distractors'},'location','northwest')
-xlabel('Time(s)');ax=gca;ax.YTickLabel={};
+xlim([-cl_time(end) 0.25]);ylim([40 90]);vline(0,'color','k','linestyle','--','linewidth',2);
+text(-0.02,43,'Discrimination target','HorizontalAlignment','right');legend([h3,h4],{'Noisy distractors','Salient distractors'},'location','northwest')
+xlabel('Time(s)');ax=gca;ax.YTickLabel={};box off
 
 %% Calculate correlations with behaviour for paper (mention)
 DE_dist_high=(([timecourses.alpha.dist{:,4}]-[timecourses.alpha.dist{:,2}])./([timecourses.alpha.dist{:,4}]+[timecourses.alpha.dist{:,2}]))';
@@ -808,16 +856,12 @@ t2=dsearchn(DE_time',1.35);
 
 %Alpha
 Alpha_DE_dist_high_tw=nanmean(DE_dist_high(:,t1:t2),2);
-[rho,p]=corr(Alpha_DE_dist_high_tw,DE_high);
-disp(['High load Distractor alpha salient vs noisy correlation with behavioral distractor interference with highload: r: ' num2str(rho,2) ' p=' num2str(p,2) ' (pearson)'])
 [rho,p]=corr(Alpha_DE_dist_high_tw,DE_high,'type','spearman');
 disp(['High load Distractor alpha salient vs noisy correlation with behavioral distractor interference with highload: r: ' num2str(rho,2) ' p=' num2str(p,2) ' (spearman)'])
 
 %RFT
 RFT_DE_dist_high=(([timecourses.RFT.dist{:,4}]-[timecourses.RFT.dist{:,2}])./([timecourses.RFT.dist{:,4}]+[timecourses.RFT.dist{:,2}]))';
 RFT_DE_dist_high_tw=nanmean(RFT_DE_dist_high(:,t1:t2),2);
-[rho,p]=corr(RFT_DE_dist_high_tw,DE_high);
-disp(['High load Distractor RFT salient vs noisy correlation with behavioral distractor interference with highload: r: ' num2str(rho,2) ' p=' num2str(p,2) ' (pearson)'])
 [rho,p]=corr(RFT_DE_dist_high_tw,DE_high,'type','spearman');
 disp(['High load Distractor RFT salient vs noisy correlation with behavioral distractor interference with highload: r: ' num2str(rho,2) ' p=' num2str(p,2) ' (spearman)'])
 
